@@ -68,7 +68,7 @@ Please refer to the original MoCo repo for measuring the linear evaluation accur
 
 
 
-### License
+## License
 
 This project is under the CC-BY-NC 4.0 license. See [LICENSE](LICENSE) for details.
 
