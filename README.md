@@ -46,7 +46,20 @@ Please refer to the original MoCo repo for measuring the linear evaluation accur
 
 
 ### Unsupervised Training
-Please refer to the original MoCo repo for training the self-supervised models.
+For training five improved baselines on 5 small models, we use the same training command, with the only change of the architecture name.
+```
+python main_moco_final.py <path/to/imagenet/folder> \
+    -a <arch-name> --lr 0.06 --batch-size 512 -j 64 --epochs 800 \
+    --dist-url 'env://' --multiprocessing-distributed --world-size 1 --rank 0 \
+    --mlp wide --moco-t 0.1 --moco-k 65536 \
+    --aug-plus --cj 1. --grey-scale 0.5 --gaussian-blur 0.5 --cos \
+    --ckpt-dir <path/to/checkpointing/folder> --resume <path/to/SEED-distilled/checkpoint> \
+    --restart
+```
+
+[200-ep checkpoints](https://sbox.myoas.com/l/Be8e35efd05dc4ba4) with password: P7At.9.8eMc 
+
+[800-ep checkpoints](https://sbox.myoas.com/l/B484437465575f607) with password: t90G9*bS8Q.O
 
 
 ### License
