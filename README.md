@@ -15,8 +15,9 @@ This work is done with the help of the amazing code base of the self-supervised 
 
 ## Overview of the paper
 <p align="center">
-  <img src='miscs/overview.png' width='350'>
+  <img src='miscs/overview.png' width='500'>
 </p>
+
 
 [200-ep checkpoints](https://sbox.myoas.com/l/Be8e35efd05dc4ba4) with password: P7At.9.8eMc 
 
@@ -48,7 +49,7 @@ python -m experiments.sample-augs \
 ```
 Here is an example of the original and augmented views of image yielded:
 <p align="center">
-  <img src='miscs/auged-example.png' width='500'>
+  <img src='miscs/auged-example.png' width='650'>
 </p>
 
 ### Instance discrimination accuracy
