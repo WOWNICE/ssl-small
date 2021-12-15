@@ -43,7 +43,7 @@ parser.add_argument('--pretrained', default='', type=str,
                     help='path to moco pretrained checkpoint')
 parser.add_argument('--gpu', default=0, type=int,
                     help='which gpu to use.')
-parser.add_argument('-s', '--sample-per-class', default=100, type=int,
+parser.add_argument('-s', '--sample-per-class', default=50, type=int,
                     help='train=100, val=50')
 
 
