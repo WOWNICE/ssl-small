@@ -10,4 +10,3 @@ from architectures.moco.moco_resnet import *
 from architectures.swav.swav_resnet import *
 from architectures.simclr.simclr_resnet import *
 from architectures.vits.deit import *
-from architectures.others.res2netlite import *

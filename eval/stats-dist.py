@@ -18,7 +18,6 @@ import moco.builder
 import models
 from util import *
 
-from matplotlib import pyplot as plt
 import numpy as np
 
 model_names = sorted(name for name in models.__dict__
@@ -55,7 +54,6 @@ def _lunif_cpu(x, t=2):
     return sq_pdist.mul(-t).exp().mean().log()
 
 def _lunif_gpu(x, t=2):
-    # sq_pdist = torch.pdist(x, p=2).pow(2)     # not supported in AMP
     sq_pdist = torch.pdist(x, p=2).pow(2)
     return sq_pdist.mul(-t).exp().mean().log().detach().item()
 
@@ -139,32 +137,11 @@ def main():
     avg_align_d = np.array(align_cls_d).mean()
     avg_align_sd = np.array(align_cls_sd).mean()
 
-    # visualization of the 
-    plt.rcParams['figure.figsize'] = [20, 10]
-    colors = plt.cm.jet
-
-    # single distribution
-    plt.subplot(121)
-    plt.hist(align_cls_d, bins=100, range=(0, 2), alpha=0.3, color='green', label="D")
-    plt.hist(align_cls_sd, bins=100, range=(0, 2), alpha=0.3, color='red', label="D'")
-    plt.legend(loc='best')
-    plt.title('intra-class alignment distribution')
-
-    plt.subplot(122)
-    plt.hist2d(align_cls_d, align_cls_sd, bins=100)
-    plt.xlabel('D')
-    plt.ylabel("D'")
-    plt.title("class alignment correlation between D and D'.")
-
-    figname = 'stat-dist.png'
-    plt.savefig(figname)
-    print(f"=> figure saved as {figname}")
-
     #===========================================================================================
     # Uniformity: instance-level statistic
     #===========================================================================================
-    # directly computing the uniformity requires n*n complexity, 
-    # instead we compute the averaged uniformity.
+    # Instead of directly computing the uniformity requires n*n complexity, 
+    # we compute the averaged uniformity.
     print("=> calculating instance-level uniformity...")
     ind, n, t, uniform_d, uniform_sd = torch.randperm(r0.shape[0]), 128, 3, 0., 0.
     for i in range(t):
@@ -175,11 +152,6 @@ def main():
     
     uniform_d /= t
     uniform_sd /= t
-
-    print(60*'=')
-    # print(f"D-D' alignment: {align_d_sd}, D'-D' alignment: {align_sd_sd}")
-    # print(f"D cls-alignment: {avg_align_d}, D' cls-alignment: {avg_align_sd}")
-    # print(f"D uniformity: {uniform_d}, D' uniformity: {uniform_sd}")
 
     print(f"{args.pretrained},{args.data}\n{'D-SD align':<15}{'SD-SD align':<15}{'D cls-align':<15}{'SD cls-align':<15}{'D uniform':<15}{'SD uniform':<15}\n{align_d_sd:<15.4f}{align_sd_sd:<15.4f}{avg_align_d:<15.4f}{avg_align_sd:<15.4f}{uniform_d:<15.4f}{uniform_sd:<15.4f}")
 

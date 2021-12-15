@@ -7,6 +7,7 @@ from torchvision.utils import save_image
 import random 
 import math
 import numpy as np
+from tqdm import tqdm
 
 import torchvision.transforms.functional as transF
 
@@ -20,6 +21,8 @@ parser.add_argument('savedir', metavar='DIR',
                     help='path where to save the auged pics.')
 parser.add_argument('--aug', default='moco', type=str,
                     help='which augmentatioin to use.')
+parser.add_argument('--images-per-class', default=50, type=int,
+                    help='Images per class to be sampled.')
 
 
 # different augmentation methods 
@@ -163,7 +166,7 @@ def main():
     args = parser.parse_args()
 
     if args.aug == 'moco':
-        augmentation = AugMoco()
+        augmentation = AugMoCo()
     elif args.aug == 'nointer':
         augmentation = AugNoIntersection()
     elif args.aug == 'super-hard':
@@ -189,17 +192,15 @@ def main():
     
     # sample different images in different classes
     # print(data_class_paths)
-    for cls_ind, data_class_path in enumerate(data_class_paths):
+    for cls_ind, data_class_path in enumerate(tqdm(data_class_paths)):
         image_files = os.listdir(data_class_path)
         image_paths = [os.path.join(data_class_path, x) for x in image_files]
-        print(len(image_paths))
         image_names = [x.split('.')[0] for x in image_files]
         
         # images per class
-        for i, image_path in enumerate(image_paths[:100]):
+        for i, image_path in enumerate(image_paths[:args.images_per_class]):
             image = Image.open(image_path)
             image_save_path = f"{os.path.join(target_class_paths[cls_ind], image_names[i])}"
-            print(image_save_path)
             image.save(f"{image_save_path}-0.jpeg")
 
             auged_images = augmentation(image)
@@ -208,13 +209,11 @@ def main():
             else: 
                 im_number = 10
             for view in range(im_number):
-                print(f"{image_save_path}-{view+1}.jpeg")
                 auged_images[view].save(f"{image_save_path}-{view+1}.jpeg")
-            
-            print(augmentation.failed_aug / augmentation.total_aug)
 
-
-#==============================utils==============
+#==============================utils================================
+# These utils are not used in the paper.
+# Feel free to take a look. 
 def rand_crop(scale=(0.2, 1.), ratio=(0.75, 1.333333333), img_size=(512, 512)):
     """returns """
     width, height = img_size
@@ -339,15 +338,15 @@ def average_mask(image, box, box_inter):
     return pasted, baseline
 
 if __name__ == '__main__':
-    # main()
-    crop = AugIoUThresholdGaussianMask(lo=1e-4, hi=0.05)
-    im = Image.open('/raid/ssl-positive-eval/auged-train/n01440764/n01440764_44-0.jpeg')
-    # im = transF.resize(im, size=(224, 224))
+    main()
+    # crop = AugIoUThresholdGaussianMask(lo=1e-4, hi=0.05)
+    # im = Image.open('/raid/ssl-positive-eval/auged-train/n01440764/n01440764_44-0.jpeg')
+    # # im = transF.resize(im, size=(224, 224))
 
-    result = crop(im)
-    # print(crop1, crop2, iou_val)
-    for ind, i in enumerate(result[:-1]):
-        i.save(f"test_{ind+1}.jpeg")
+    # result = crop(im)
+    # # print(crop1, crop2, iou_val)
+    # for ind, i in enumerate(result[:-1]):
+    #     i.save(f"test_{ind+1}.jpeg")
         
     
     # im = Image.open('/home/luodongliang/Projects/ssl-small-main/experiments/aug-analysis/auged-train/n01440764/n01440764_44-0.jpeg')

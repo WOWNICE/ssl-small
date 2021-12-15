@@ -63,7 +63,6 @@ parser.add_argument('--dataset-mode', default='normal', type=str,
 def main():
     args = parser.parse_args()
     torch.cuda.set_device(args.gpu)
-    print(args.data)
     model = load_model(args.arch, args.pretrained)
     
     # delete the final FC layer
@@ -138,7 +137,7 @@ def main():
     for i in range(len(accs)):
         accs[i] /= len(clsr0)
 
-    print(f"Masked: {args.dataset_mode}; Mode: {args.mode}; Top1-{args.topk}: {accs}; Ckpt: {args.pretrained}; Dataset: {args.data}")
+    print(f"Masked: {args.dataset_mode}; Mode: {args.mode}; Top1-{args.topk}: {accs}; CKPT: {args.pretrained}; Dataset: {args.data}")
 
 def accuracy(output, target, topk=(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
@@ -152,7 +151,7 @@ def accuracy(output, target, topk=(1,)):
 
         res = []
         for k in topk:
-            correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
+            correct_k = correct[:k].reshape((-1,)).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res    
 
